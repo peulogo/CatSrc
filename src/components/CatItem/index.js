@@ -1,0 +1,1 @@
+export { CatItem } from "./CatItem";

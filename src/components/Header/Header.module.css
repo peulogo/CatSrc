@@ -1,0 +1,45 @@
+.header{
+    background-color: #2196F3;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.24);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    transition: all .3s ease 0s;
+
+}
+
+._active{
+    transition: all .3s ease 0s;
+}
+
+._active .header__container > a {
+    padding: 15px 0;
+    transition: all .3s ease 0s;
+}
+
+.header__container > a{
+    text-decoration: none;
+    display: inline-block;
+    background: transparent;
+    border: 0;
+    outline: unset;
+    padding: 23px 0;
+    transition: background .3s linear;
+    color: #FFFFFF;
+    text-align: center;
+    transition: all .3s ease 0s;
+
+}
+
+.header__container > a:hover{
+    background: #1E88E5;
+}
+.all_cats__button{
+    width: 120px;
+}
+
+.fav_cats__button{
+    width: 173px
+}
