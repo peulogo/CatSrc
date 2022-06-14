@@ -1,0 +1,3 @@
+export const SET_ITEMS = 'SET_ITEMS'
+export const SET_FAVORITE = 'SET_FAVORITE'
+export const CHANGE_FAVORITE = 'CHANGE_FAVORITE'
