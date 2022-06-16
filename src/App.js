@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux'
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import { CatItem } from './components/CatItem';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header'
+import { changeFavorite, setFavorite, setItemsAction } from './components/store/actions';
 function App() {
 
-  const [items, setItems] = useState([])
-  const [favorite, setFavorite] = useState([])
+  const dispatch = useDispatch()
+  const items = useSelector(state => state.reducer.items)
+  const favorite = useSelector(state => state.reducer.favorite)
   const [fetching, setFetching] = useState(true)
   const limit = 20
   const apiKey = "506c3183-5a31-4c41-9f7b-116fa324ede2"
@@ -15,15 +18,14 @@ function App() {
 
   useEffect(() => {
     if (fetching) {
-      getAllCatsImg(setItems)
+      getAllCatsImg()
     }
   }, [fetching])
 
   useEffect(() => {
     if (localStorage.length !== 0) {
-      let arr = []
       for (let i = 0; i < localStorage.length; i++) {
-        arr.push(getCatImg(setFavorite, localStorage.key(i)))
+        getCatImg(localStorage.key(i))
       }
     }
 
@@ -42,24 +44,25 @@ function App() {
   function getAllCatsImg(stateConf) {
     fetch(`https://api.thecatapi.com/v1/images/search?limit=${limit}&mime_types=jpg&api_key=${apiKey}`)
       .then(resp => resp.json())
-      .then(data => stateConf(prev => [...prev, ...data]))
+      .then(data => dispatch(setItemsAction(data)))
       .finally(() => setFetching(false))
   }
 
   function changeFav(id) {
     if (favorite.find(item => item.id === id)) {
-      setFavorite(prev => prev.filter(item => item.id !== id))
+      dispatch(changeFavorite(id))
       localStorage.removeItem(id)
+      console.log('dsa');
     } else {
-      getCatImg(setFavorite, id)
+      getCatImg(id)
       localStorage.setItem(id, id)
     }
   }
 
-  const getCatImg = (stateConf, id) => {
+  const getCatImg = (id) => {
     fetch(`https://api.thecatapi.com/v1/images/${id}`)
       .then(resp => resp.json())
-      .then(data => stateConf(prev => [...prev, data]))
+      .then(data => dispatch(setFavorite(data)))
   }
 
   return (
@@ -70,7 +73,7 @@ function App() {
           <Routes>
             <Route path='/' element={items.length ?
               <div className='catList__container'>
-                {items.map(item => <CatItem item={item} changeFav={changeFav} />)}
+                {items.map(item => <CatItem key={item.id} item={item} changeFav={changeFav} />)}
               </div>
               :
               null
@@ -78,7 +81,7 @@ function App() {
             />
             <Route path='/favorite' element={favorite.length ?
               <div className='catList__container'>
-                {favorite.map(item => <CatItem item={item} changeFav={changeFav} />)}
+                {favorite.map(item => <CatItem key={item.id} item={item} changeFav={changeFav} />)}
               </div>
               :
               <div className='emty__fav'><span>Список котиков пуст.</span> <span>Добавте котиков.</span></div>
